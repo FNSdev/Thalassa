@@ -1,0 +1,5 @@
+auth:
+  rootPassword: "root"
+
+service:
+  type: LoadBalancer

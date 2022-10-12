@@ -1,0 +1,15 @@
+executor: KubernetesExecutor
+
+images:
+  airflow:
+    repository: thalassa/airflow
+    tag: 0.0.1
+
+webserver:
+  service:
+    type: LoadBalancer
+
+redis:
+  enabled: false
+
+# TODO: enable logs
