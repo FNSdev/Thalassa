@@ -21,4 +21,4 @@ dist/
 .idea
 /venv/
 /.vscode/
-.env.local
+src/.env.local

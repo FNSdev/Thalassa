@@ -3,7 +3,7 @@ import os
 
 from pydantic import BaseSettings
 
-_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def setup_logging() -> None:
@@ -14,6 +14,12 @@ def setup_logging() -> None:
 
 
 class Settings(BaseSettings):
+    MONGODB_HOST: str
+    MONGODB_PORT: int = 27017
+    MONGODB_USERNAME: str
+    MONGODB_PASSWORD: str
+    MONGODB_DB_NAME = "thalassa"
+
     TWITTER_API_KEY: str
     TWITTER_KEY_SECRET: str
     TWITTER_BEARER_TOKEN: str
