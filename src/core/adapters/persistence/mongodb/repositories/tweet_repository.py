@@ -22,28 +22,28 @@ class MongoDBTweetRepository(TweetRepository):
     def create(
         self,
         id_: int,
+        category: str,
         created_at: datetime | None,
         text: str,
         author_id: int | None,
-        conversation_id: int | None,
         data: dict,
     ) -> Tweet:
         tweet = {
             "_id": id_,
+            "category": category,
             "created_at": created_at,
             "saved_at": datetime.utcnow().replace(tzinfo=ZoneInfo("UTC")),
             "text": text,
             "author_id": author_id,
-            "conversation_id": conversation_id,
             "data": data,
         }
         self._collection.insert_one(document=tweet)
         return Tweet(
             id=id_,
+            category=category,
             created_at=created_at,
             saved_at=tweet["saved_at"],
             text=text,
             author_id=author_id,
-            conversation_id=conversation_id,
             data=data,
         )
