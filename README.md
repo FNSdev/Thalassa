@@ -54,6 +54,21 @@ helm repo update
 helm install mongodb bitnami/mongodb --values mongodb/values.yaml
 ```
 
+It is also required to create a database and a user.
+
+```
+use thalassa
+db.createUser(
+    {
+        user: "thalassa",
+        pwd: "thalassa",
+        roles: [
+            "readWrite",
+        ],
+    },
+)
+```
+
 ## Install Airflow
 
 ### [OPTIONAL] Local installation
@@ -80,4 +95,25 @@ cd iac/local
 helm repo add apache-airflow https://airflow.apache.org
 helm repo update
 helm install airflow apache-airflow/airflow --values airflow/values.yaml
+```
+
+## Create .env.local in the `src` folder
+
+```dotenv
+MONGODB_HOST=100.120.8.200
+MONGODB_USERNAME=thalassa
+MONGODB_PASSWORD=thalassa
+
+TWITTER_API_KEY=<YOUR_TWITTER_API_KEY>
+TWITTER_KEY_SECRET=<YOUR_TWITTER_KEY_SECRET>
+TWITTER_BEARER_TOKEN=<YOUR_TWITTER_BEARER_TOKEN>
+
+SPARK_MONGODB_READ_URL=mongodb://thalassa:thalassa@100.120.8.200/thalassa
+SPARK_MONGODB_WRITE_URL=mongodb://thalassa:thalassa@100.120.8.200/thalassa
+```
+
+## Install dependencies
+
+```shell
+poetry install
 ```
