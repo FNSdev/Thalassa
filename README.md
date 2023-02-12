@@ -117,3 +117,22 @@ SPARK_MONGODB_WRITE_URL=mongodb://thalassa:thalassa@100.120.8.200/thalassa
 ```shell
 poetry install
 ```
+
+## Stream tweets
+
+```shell
+cd src
+make consume-tweets
+```
+
+## Preprocess tweets using spark
+
+```shell
+make preprocess-tweets
+```
+
+## Count words using spark
+
+```shell
+make count-words
+```

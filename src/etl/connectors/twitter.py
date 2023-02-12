@@ -53,7 +53,7 @@ if __name__ == "__main__":
     setup_logging()
 
     connector = TwitterConnector(
-        tweet_repository=MongoDBTweetRepository(client=client, collection_name="tweets_2"),
+        tweet_repository=MongoDBTweetRepository(client=client),
         twitter_user_repository=MongoDBTwitterUserRepository(client=client),
         category="covid",
         bearer_token=settings.TWITTER_BEARER_TOKEN,

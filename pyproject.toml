@@ -15,6 +15,29 @@ pymongo = "^4.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pyspark = "^3.3.1"
+black = "^23.1.0"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
