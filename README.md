@@ -84,7 +84,7 @@ pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}
 
 ```shell
 cd src/etl
-docker build --tag thalassa/airflow:0.0.1 .
+docker build -f Dockerfile.airflow --tag thalassa/airflow:0.0.1 .
 kind load docker-image thalassa/airflow:0.0.1
 ```
 
@@ -121,18 +121,69 @@ poetry install
 ## Stream tweets
 
 ```shell
-cd src
 make consume-tweets
+```
+
+**Recently Twitter made it impossible to stream tweets without a paid subscription**
+
+As an alternative, I recommend to download this data set: 
+[Covid Tweets from Kaggle.](https://www.kaggle.com/datasets/gpreda/covid19-tweets)
+
+Then, you should put the CSV into `src` folder and run a spark job to inject data into the DB.
+
+```shell
+make import-tweets-from-csv
 ```
 
 ## Preprocess tweets using spark
 
+### If you streamed tweets yourself
+
 ```shell
-make preprocess-tweets
+make join-tweets-with-users
+make clean-tweets
+```
+
+### If you downloaded tweets from Kaggle
+
+```shell
+make clean-tweets
 ```
 
 ## Count words using spark
 
 ```shell
 make count-words
+```
+
+## Install Spark K8S Operator
+
+### Install operator from the helm chart
+
+```shell
+helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+helm repo update
+helm install spark-operator spark-operator/spark-operator --namespace spark-operator --create-namespace
+```
+
+### Build image with spark jobs
+
+```shell
+cd src/etl
+docker build -f Dockerfile.spark --tag thalassa/spark:0.0.1 .
+kind load docker-image thalassa/spark:0.0.1
+```
+
+### Create namespace for spark applications
+
+```shell
+kubectl create namespace spark-applications
+```
+
+### Create service account (which will be used to run spark jobs) & role binding for it
+
+```shell
+cd iac/spark
+kubectl apply -f service_account.yaml
+kubectl apply -f role_binding.yaml
 ```

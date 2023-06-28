@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import current_timestamp
 from pyspark.sql.types import (
     ArrayType,
@@ -255,36 +255,29 @@ def clean_text(row: Tweet) -> ProcessedTweet:
 
 spark = SparkSession.builder.appName("thalassa").getOrCreate()
 
+# TODO: How to dynamically pass collection name?
+#   might be either 'tweets_from_csv' or 'tweets_with_users'
 tweets_df: DataFrame = (
-    spark.read.option("spark.mongodb.read.collection", "tweets").format("mongodb").load()
+    spark.read.option("spark.mongodb.read.collection", "tweets_from_csv").format("mongodb").load()
 )
-users_df: DataFrame = (
-    spark.read.option("spark.mongodb.read.collection", "twitter_users").format("mongodb").load()
-)
-
 tweets_df.createOrReplaceTempView("tweets")
-users_df.createOrReplaceTempView("users")
 
-# TODO: process tweets for
-#   a. current date (by default)
-#   b. specific date (need to research how to pass it as an argument)
-tweets_with_authors_df = spark.sql(
+tweets_df = spark.sql(
     sqlQuery=(
         """
         SELECT 
-            t._id as id,
-            t.created_at,
-            t.text,
-            t.category,
-            u.location,
-            u.username
-        FROM tweets t
-        LEFT OUTER JOIN users u ON t.author_id = u._id
+            _id as id,
+            created_at,
+            text,
+            category,
+            location,
+            username
+        FROM tweets
         """
     ),
 )
 
-rdd = tweets_with_authors_df.rdd.map(f=clean_text)
+rdd = tweets_df.rdd.map(f=clean_text)
 
 preprocessed_tweets_df: DataFrame = rdd.toDF(
     schema=StructType(
@@ -307,6 +300,6 @@ preprocessed_tweets_df = preprocessed_tweets_df.withColumnRenamed(existing="id",
 (
     preprocessed_tweets_df.write.format("mongodb")
     .mode("append")
-    .option("collection", "preprocessed_tweets")
+    .option("collection", "cleaned_tweets")
     .save()
 )

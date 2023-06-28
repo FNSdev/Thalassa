@@ -22,3 +22,5 @@ dist/
 /venv/
 /.vscode/
 src/.env.local
+
+covid19_tweets.csv

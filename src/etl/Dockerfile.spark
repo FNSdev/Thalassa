@@ -1,0 +1,7 @@
+FROM gcr.io/spark-operator/spark-py:v3.1.1
+
+# it's possible to install and zip python dependencies if required
+
+COPY ./spark_jobs spark_jobs
+
+USER 1001
