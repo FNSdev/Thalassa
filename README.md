@@ -163,7 +163,7 @@ make count-words
 ```shell
 helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
 helm repo update
-helm install spark-operator spark-operator/spark-operator --namespace spark-operator --create-namespace
+helm install spark-operator spark-operator/spark-operator --set image.tag=v1beta2-1.3.3-3.1.1 --namespace spark-operator --create-namespace
 ```
 
 ### Build image with spark jobs
@@ -185,5 +185,12 @@ kubectl create namespace spark-applications
 ```shell
 cd iac/spark
 kubectl apply -f service_account.yaml
+kubectl apply -f role.yaml
 kubectl apply -f role_binding.yaml
+```
+
+### Apply count_words job manually
+
+```shell
+kubectl apply -f jobs/count_words
 ```
